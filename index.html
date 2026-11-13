@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f6f7fb" />
+  <meta name="description" content="Explore common software architecture patterns through interactive diagrams, use cases, and trade-offs. A practical learning resource for custom business software." />
+  <link rel="canonical" href="https://usdshahbazraza.github.io/custom-software-architecture/" />
+  <title>Software Architecture Explorer — Patterns, Trade-offs & Decisions</title>
+  <style>
+    :root { --bg:#f6f7fb; --surface:#ffffff; --ink:#15203b; --muted:#69748b; --line:#e5e9f2; --brand:#4355f5; --brand-deep:#2935aa; --shadow:0 10px 35px rgba(28,43,86,.055); --radius:20px; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif; background:var(--bg); color:var(--ink); line-height:1.55; }
+    a { color:inherit; text-decoration:none; }
+    button,input { font:inherit; }
+    button { cursor:pointer; }
+    :focus-visible { outline:3px solid #92a1ff; outline-offset:3px; }
+    .shell { max-width:1250px; padding:0 28px; margin:auto; }
+    header { position:sticky; top:0; z-index:20; border-bottom:1px solid rgba(229,233,242,.9); background:rgba(255,255,255,.94); backdrop-filter:blur(14px); }
+    .nav { display:flex; min-height:76px; gap:26px; align-items:center; }
+    .brand { display:flex; align-items:center; gap:11px; font-size:16px; font-weight:780; letter-spacing:-.45px; white-space:nowrap; }
+    .logo { width:36px; height:36px; border-radius:11px; display:grid; place-items:center; background:var(--brand); color:white; box-shadow:0 4px 11px #4355f533; }
+    .logo svg { width:23px; height:23px; }
+    .navlinks { margin-left:auto; display:flex; align-items:center; gap:25px; color:#58647d; font-size:13px; font-weight:600; }
+    .navlinks a:hover { color:var(--brand); }
+    .outline { border:1px solid var(--line); background:white; color:var(--ink); padding:10px 16px; border-radius:10px; font-size:13px; font-weight:650; display:inline-flex; align-items:center; gap:8px; }
+    .outline:hover { border-color:#aeb7ff; }
+    .hero { padding:91px 0 62px; display:grid; grid-template-columns:1fr .84fr; gap:56px; align-items:center; }
+    .eyebrow { display:inline-flex; gap:8px; align-items:center; padding:6px 12px; background:#e9ecff; color:#3e48b2; border:1px solid #d9deff; border-radius:100px; font-size:12px; font-weight:700; letter-spacing:.25px; }
+    .eyebrow .dot { width:7px; height:7px; background:#5263fa; border-radius:50%; }
+    h1 { font-size:clamp(42px,5vw,67px); line-height:1.08; letter-spacing:-3px; margin:21px 0 24px; font-weight:790; }
+    h1 em { font-style:normal; color:var(--brand); }
+    .lead { font-size:17px; color:#5f6c84; max-width:590px; line-height:1.75; margin:0 0 27px; }
+    .actions { display:flex; flex-wrap:wrap; gap:12px; }
+    .primary { display:inline-flex; align-items:center; justify-content:center; gap:9px; padding:12px 19px; background:var(--brand); color:white; border:1px solid var(--brand); border-radius:11px; font-size:14px; font-weight:700; box-shadow:0 7px 18px #4355f522; }
+    .primary:hover { background:var(--brand-deep); }
+    .primary svg,.outline svg { width:17px; height:17px; }
+    .intro-caption { margin-top:25px; color:#8b94a8; font-size:12px; }
+    .heroart { background:radial-gradient(circle at 66% 20%,#eef0ff 0%,#f9faff 38%,#fff 85%); border:1px solid var(--line); border-radius:26px; min-height:405px; box-shadow:var(--shadow); display:grid; place-items:center; padding:24px; overflow:hidden; }
+    .heroart svg { width:100%; max-width:475px; height:auto; filter:drop-shadow(0 4px 7px rgba(55,68,140,.05)); }
+    .section { padding:44px 0 65px; }
+    .section-head { display:flex; justify-content:space-between; align-items:end; gap:20px; margin-bottom:23px; }
+    .kicker { display:block; color:var(--brand); font-size:12px; text-transform:uppercase; letter-spacing:1.5px; font-weight:800; margin-bottom:9px; }
+    h2 { font-size:clamp(27px,3vw,36px); line-height:1.2; letter-spacing:-1.25px; margin:0 0 10px; }
+    .section-head p { margin:0; max-width:590px; color:var(--muted); font-size:14px; }
+    .searchbar { display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between; margin:23px 0; }
+    .search-wrap { display:flex; align-items:center; gap:10px; border:1px solid var(--line); border-radius:11px; background:white; padding:0 14px; min-height:44px; flex:1; min-width:215px; max-width:430px; }
+    .search-wrap svg { width:17px; height:17px; color:#8994a8; }
+    .search-wrap input { width:100%; border:0; outline:none; background:transparent; color:var(--ink); font-size:13px; }
+    .filters { display:flex; gap:7px; flex-wrap:wrap; }
+    .filter { border:1px solid var(--line); border-radius:9px; padding:8px 12px; background:white; color:#65718a; font-size:12px; font-weight:650; }
+    .filter[aria-pressed="true"] { background:#e9ecff; color:var(--brand-deep); border-color:#cfd6ff; }
+    .grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:17px; }
+    .pattern { text-align:left; display:flex; flex-direction:column; background:#fff; border:1px solid var(--line); border-radius:18px; overflow:hidden; box-shadow:var(--shadow); padding:0; min-height:290px; transition:transform .17s,border-color .17s,box-shadow .17s; }
+    .pattern:hover { transform:translateY(-3px); border-color:#bac3ff; box-shadow:0 14px 25px rgba(48,59,128,.08); }
+    .visual { height:148px; display:grid; place-items:center; padding:17px; background:linear-gradient(135deg,#f2f4ff,#fafbff); border-bottom:1px solid #edf0f9; }
+    .visual svg { width:100%; max-height:125px; }
+    .body { padding:19px 21px 20px; flex:1; display:flex; flex-direction:column; }
+    .pattern-title { font-size:16px; font-weight:780; letter-spacing:-.35px; margin-bottom:7px; }
+    .pattern-desc { margin:0 0 15px; color:#68748a; font-size:12.5px; line-height:1.65; flex:1; }
+    .tag { display:inline-block; background:#f1f3f8; color:#53617c; padding:4px 9px; border-radius:6px; font-size:11px; font-weight:650; }
+    .cardfoot { display:flex; justify-content:space-between; align-items:center; gap:10px; }
+    .explore { color:var(--brand); font-size:12px; font-weight:750; }
+    .empty { display:none; background:white; padding:35px; border:1px dashed #c9d1e0; border-radius:14px; color:var(--muted); text-align:center; }
+    .compare { background:#111c3c; color:white; border-radius:25px; padding:34px; display:grid; grid-template-columns:1fr 1.1fr; gap:28px; align-items:center; margin:9px 0 60px; }
+    .compare .kicker { color:#9ca8ff; }
+    .compare h2 { margin:0 0 14px; }
+    .compare p { color:#aeb9d0; font-size:14px; margin:0; line-height:1.75; }
+    .comparison { background:#1b294f; border:1px solid #3b486f; padding:18px; border-radius:14px; display:grid; gap:11px; }
+    .comp-row { display:grid; grid-template-columns:132px 1fr; align-items:center; font-size:12px; gap:10px; }
+    .comp-row span:first-child { color:#b4bfdb; }
+    .comp-row span:last-child { color:#fff; font-weight:650; }
+    .bottom { display:grid; grid-template-columns:1fr 1fr; gap:17px; margin-bottom:75px; }
+    .resource { border:1px solid var(--line); border-radius:18px; background:#fff; padding:25px; }
+    .resource h3 { margin:0 0 9px; letter-spacing:-.5px; font-size:18px; }
+    .resource p { color:var(--muted); font-size:13px; line-height:1.7; margin:0 0 20px; }
+    .link { color:var(--brand); font-size:13px; font-weight:750; }
+    footer { border-top:1px solid var(--line); background:#fff; color:#748098; }
+    .footer-wrap { display:flex; flex-wrap:wrap; justify-content:space-between; gap:16px; padding:24px 0; font-size:12px; }
+    .footer-wrap a { color:#4355f5; font-weight:650; }
+    dialog { border:0; padding:0; width:min(850px,calc(100vw - 24px)); max-height:min(90vh,950px); border-radius:21px; box-shadow:0 32px 100px #1d295d50; color:var(--ink); }
+    dialog::backdrop { background:rgba(16,26,53,.63); backdrop-filter:blur(3px); }
+    .dialog-head { display:flex; align-items:flex-start; justify-content:space-between; gap:18px; padding:29px 31px 18px; }
+    .dialog-head h2 { font-size:28px; margin:0; }
+    .dialog-sub { color:#68748a; font-size:14px; margin:6px 0 0; }
+    .close { width:35px; height:35px; border:1px solid var(--line); border-radius:10px; background:white; font-size:23px; line-height:1; }
+    .modal-content { padding:0 31px 32px; }
+    .modal-chart { background:#f7f8ff; border:1px solid #e8ecf8; padding:16px; border-radius:16px; display:grid; place-items:center; min-height:235px; margin:5px 0 22px; }
+    .modal-chart svg { width:100%; max-width:560px; max-height:240px; }
+    .details { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+    .details h3 { font-size:13px; font-weight:780; margin:0 0 9px; }
+    .details ul { padding-left:19px; margin:0; color:#627089; font-size:13px; line-height:1.9; }
+    .tradeoff { border-top:1px solid var(--line); padding-top:18px; margin-top:21px; color:#647189; font-size:13px; }
+    .tradeoff strong { color:var(--ink); }
+    @media (max-width:900px) { .hero { grid-template-columns:1fr; padding:64px 0 40px; gap:30px; } .heroart { min-height:320px; } .grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .compare { grid-template-columns:1fr; } }
+    @media (max-width:640px) { .shell { padding:0 18px; } .nav { min-height:68px; } .navlinks a:not(.outline) { display:none; } .navlinks { gap:0; } .brand { font-size:14px; } .outline { padding:9px 10px; } h1 { letter-spacing:-1.9px; } .lead { font-size:15px; } .heroart { min-height:275px; } .grid,.bottom { grid-template-columns:1fr; } .section { padding:29px 0 46px; } .search-wrap { max-width:none; } .searchbar { align-items:stretch; } .filters { width:100%; } .comp-row { grid-template-columns:98px 1fr; } .compare { padding:25px; } .dialog-head { padding:24px 22px 14px; } .modal-content { padding:0 22px 26px; } .details { grid-template-columns:1fr; gap:16px; } }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior:auto; } *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
+  </style>
+</head>
+<body>
+<header>
+ <div class="shell nav">
+  <a class="brand" href="#top" aria-label="Software Architecture Explorer home"><span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="2" width="6" height="6" rx="1.2"/><rect x="2" y="16" width="6" height="6" rx="1.2"/><rect x="16" y="16" width="6" height="6" rx="1.2"/><path d="M12 8v4M5 16v-4h14v4"/></svg></span> Architecture Explorer</a>
+  <nav class="navlinks" aria-label="Main navigation">
+   <a href="#patterns">Patterns</a><a href="#decisions">Design decisions</a><a href="#resources">Resources</a>
+   <a class="outline" href="https://github.com/usdshahbazraza/custom-software-architecture" target="_blank" rel="noopener noreferrer">GitHub <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
+  </nav>
+ </div>
+</header>
+<main id="top">
+ <div class="shell">
+  <section class="hero" aria-labelledby="hero-title">
+   <div>
+    <span class="eyebrow"><span class="dot"></span> AN INTERACTIVE LEARNING RESOURCE</span>
+    <h1 id="hero-title">Understand software <em>architecture.</em></h1>
+    <p class="lead">Explore common architecture patterns, see how their components fit together, and understand the trade-offs behind better software decisions.</p>
+    <div class="actions"><a class="primary" href="#patterns">Explore patterns <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-7-7 7 7-7 7"/></svg></a><a class="outline" href="https://github.com/usdshahbazraza/custom-software-architecture/blob/main/README.md" target="_blank" rel="noopener noreferrer">Read the technical guide</a></div>
+    <p class="intro-caption">6 architecture patterns · Interactive diagrams · Practical trade-offs</p>
+   </div>
+   <div class="heroart" aria-label="Conceptual layered software architecture diagram">
+    <svg viewBox="0 0 520 396" role="img" aria-labelledby="hero-svg-title"><title id="hero-svg-title">Software architecture diagram showing client, application service, business modules, data and integrations</title>
+      <defs><linearGradient id="rectfill" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff"/><stop offset="1" stop-color="#f8f9ff"/></linearGradient><filter id="drop"><feDropShadow dx="0" dy="5" stdDeviation="7" flood-color="#5762b8" flood-opacity=".12"/></filter></defs>
+      <g fill="none" stroke="#9da9d0" stroke-width="2" stroke-dasharray="5 4"><path d="M260 76v33"/><path d="M260 162v34"/><path d="M260 251v29"/><path d="M140 310v28h240v-28"/></g>
+      <rect x="162" y="18" width="196" height="58" rx="13" fill="#e7eaff" stroke="#bbc5ff"/><circle cx="190" cy="47" r="13" fill="#5363f2"/><path d="M185 47h10m-5-5v10" stroke="#fff" stroke-width="2"/><text x="214" y="43" font-size="14" font-weight="700" fill="#2a3670">Web / Mobile</text><text x="214" y="59" font-size="10" fill="#6c789a">Client interface</text>
+      <rect x="132" y="109" width="256" height="54" rx="12" fill="url(#rectfill)" stroke="#d8dff0" filter="url(#drop)"/><rect x="147" y="121" width="32" height="29" rx="7" fill="#e8eaff"/><path d="M156 135h15M163 129v12" stroke="#5260ea" stroke-width="2"/><text x="194" y="132" font-size="14" font-weight="700" fill="#263351">API & Application Layer</text><text x="194" y="148" font-size="10" fill="#7481a0">Requests, access, orchestration</text>
+      <rect x="63" y="196" width="120" height="55" rx="11" fill="#fff" stroke="#cfd7ee"/><text x="123" y="219" text-anchor="middle" font-size="13" font-weight="700" fill="#344264">Identity</text><text x="123" y="236" text-anchor="middle" font-size="10" fill="#7d89a4">Roles and access</text>
+      <rect x="199" y="196" width="122" height="55" rx="11" fill="#edf0ff" stroke="#adbaff"/><text x="260" y="219" text-anchor="middle" font-size="13" font-weight="700" fill="#3043b2">Domain</text><text x="260" y="236" text-anchor="middle" font-size="10" fill="#6576bf">Business logic</text>
+      <rect x="337" y="196" width="120" height="55" rx="11" fill="#fff" stroke="#cfd7ee"/><text x="397" y="219" text-anchor="middle" font-size="13" font-weight="700" fill="#344264">Integrations</text><text x="397" y="236" text-anchor="middle" font-size="10" fill="#7d89a4">External systems</text>
+      <g fill="none" stroke="#aab5d4" stroke-width="2"><path d="M260 163v18H123v15M260 181h137v15"/></g>
+      <rect x="85" y="310" width="155" height="55" rx="12" fill="#fff" stroke="#cfd7ee"/><rect x="101" y="325" width="25" height="24" rx="5" fill="#dceaff"/><path d="M107 332h13m-13 5h13m-13 5h9" stroke="#5087e8" stroke-width="1.5"/><text x="138" y="334" font-size="12" font-weight="700" fill="#344264">Database</text><text x="138" y="348" font-size="10" fill="#7d89a4">Persistent data</text>
+      <rect x="280" y="310" width="155" height="55" rx="12" fill="#fff" stroke="#cfd7ee"/><rect x="296" y="325" width="25" height="24" rx="5" fill="#f3e7ff"/><path d="M303 337h12m-6-6v12" stroke="#a267d9" stroke-width="1.5"/><text x="333" y="334" font-size="12" font-weight="700" fill="#344264">Events</text><text x="333" y="348" font-size="10" fill="#7d89a4">Async workflows</text>
+      <path d="M260 280h-98v30M260 280h98v30" stroke="#aab5d4" stroke-width="2" fill="none"/>
+      <g fill="#6373eb"><circle cx="260" cy="93" r="3"/><circle cx="260" cy="177" r="3"/><circle cx="260" cy="275" r="3"/></g>
+    </svg>
+   </div>
+  </section>
+  <section class="section" id="patterns" aria-labelledby="patterns-title">
+   <div class="section-head"><div><span class="kicker">Explore patterns</span><h2 id="patterns-title">Every design is a trade-off.</h2><p>Browse fundamental architecture styles. Select a pattern to view its diagram, use cases, strengths, and limitations.</p></div></div>
+   <div class="searchbar"><label class="search-wrap" for="pattern-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="pattern-search" placeholder="Search architecture patterns..." autocomplete="off"/></label><div class="filters" role="group" aria-label="Filter patterns"><button class="filter" type="button" data-filter="all" aria-pressed="true">All patterns</button><button class="filter" type="button" data-filter="foundational" aria-pressed="false">Foundational</button><button class="filter" type="button" data-filter="distributed" aria-pressed="false">Distributed</button></div></div>
+   <div class="grid" id="pattern-grid"></div><div class="empty" id="no-results">No matching patterns. Try another search or filter.</div>
+  </section>
+  <section class="compare" id="decisions"><div><span class="kicker">Start with the problem</span><h2>Choose the simplest design that meets your needs.</h2><p>Different styles optimize for different goals. Team size, deployment needs, domain boundaries, operating costs, and failure modes matter more than popularity.</p></div><div class="comparison"><div class="comp-row"><span>Smaller team</span><span>Often start with a modular monolith</span></div><div class="comp-row"><span>Independent scale</span><span>Evaluate microservices when justified</span></div><div class="comp-row"><span>Async workloads</span><span>Consider events and background workers</span></div><div class="comp-row"><span>Simple application</span><span>Layered architecture may be sufficient</span></div></div></section>
+  <section class="bottom" id="resources" aria-label="More technical resources"><article class="resource"><h3>Architecture decision record</h3><p>A practical example documenting why a modular monolith may be a sensible starting point and which signals should trigger a reassessment.</p><a class="link" href="https://github.com/usdshahbazraza/custom-software-architecture/blob/main/docs/adr-0001-modular-monolith.md" target="_blank" rel="noopener noreferrer">View decision record ↗</a></article><article class="resource"><h3>Production readiness checklist</h3><p>Review security, observability, deployment, reliability, data handling, and integration concerns before taking a system into production.</p><a class="link" href="https://github.com/usdshahbazraza/custom-software-architecture/blob/main/docs/production-readiness-checklist.md" target="_blank" rel="noopener noreferrer">View checklist ↗</a></article></section>
+ </div>
+</main>
+<footer><div class="shell footer-wrap"><span>Software Architecture Explorer · An independent educational resource</span><span>For further reading on custom software services, visit <a href="https://uniquesoftwaredev.com/services/" target="_blank" rel="noopener noreferrer">Unique Software Development ↗</a></span></div></footer>
+<dialog id="pattern-dialog" aria-labelledby="dialog-title"><div class="dialog-head"><div><span class="kicker">Architecture pattern</span><h2 id="dialog-title"></h2><p class="dialog-sub" id="dialog-sub"></p></div><button class="close" id="close-dialog" type="button" aria-label="Close details">×</button></div><div class="modal-content"><div class="modal-chart" id="modal-chart"></div><div class="details"><div><h3>When it works well</h3><ul id="dialog-good"></ul></div><div><h3>What to watch out for</h3><ul id="dialog-bad"></ul></div></div><div class="tradeoff"><strong>Core trade-off: </strong><span id="dialog-tradeoff"></span></div></div></dialog>
+<script>
+(() => {
+ 'use strict';
+ const base = { blue:'#495bf3',purple:'#8c6be8',teal:'#42a6b7',green:'#58a890',gray:'#7e8aa5' };
+ function box(x,y,w,h,label,color=base.blue) { return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="9" fill="#fff" stroke="${color}" stroke-width="1.8"/><text x="${x+w/2}" y="${y+h/2+4}" text-anchor="middle" font-size="13" font-weight="650" fill="#35436d">${label}</text>`; }
+ function line(d) { return `<path d="${d}" stroke="#9da9c5" stroke-width="2" fill="none" stroke-linejoin="round"/>`; }
+ function chart(svg){ return `<svg viewBox="0 0 440 150" role="img" aria-label="Simplified conceptual architecture diagram" xmlns="http://www.w3.org/2000/svg">${svg}</svg>`; }
+ const patterns = [
+  {id:'modular',name:'Modular Monolith',type:'foundational',summary:'One deployable application with clear internal business boundaries.',subtitle:'A single deployment organized around cohesive business modules.',diagram:chart(box(155,7,130,37,'Application')+line('M220 44v24M78 68h284M78 68v18M220 68v18M362 68v18')+box(10,86,136,40,'Orders',base.blue)+box(152,86,136,40,'Inventory',base.purple)+box(294,86,136,40,'Identity',base.teal)),good:['Small or medium teams with a shared release cadence','Business features that benefit from in-process calls','Products needing a clear path to future extraction'],bad:['Strong coupling between modules without governance','One deployment boundary for the entire application','Unclear ownership may erode modularity over time'],tradeoff:'Operational simplicity and cohesive delivery, but fewer independent deployment boundaries.'},
+  {id:'micro',name:'Microservices',type:'distributed',summary:'Separate deployable services with explicit network boundaries.',subtitle:'Multiple services that communicate through APIs and messaging.',diagram:chart(box(150,3,140,35,'API gateway')+line('M220 38v20M75 58h290M75 58v17M220 58v17M365 58v17')+box(9,75,132,37,'Service A',base.blue)+box(154,75,132,37,'Service B',base.purple)+box(299,75,132,37,'Service C',base.teal)+line('M75 112v15M220 112v15M365 112v15')+box(21,127,108,20,'Data A',base.gray)+box(166,127,108,20,'Data B',base.gray)+box(311,127,108,20,'Data C',base.gray)),good:['Independent team ownership and release cycles','Different scaling demands for distinct services','Well-understood bounded contexts'],bad:['Network failure, retries, and distributed tracing','Data consistency across service boundaries','Higher deployment and operational overhead'],tradeoff:'Independent delivery and scaling in exchange for distributed-system complexity.'},
+  {id:'layered',name:'Layered Architecture',type:'foundational',summary:'Separate presentation, application, domain, and data concerns.',subtitle:'Organize dependencies into understandable, layered responsibilities.',diagram:chart(box(101,2,238,30,'Presentation',base.blue)+line('M220 32v9')+box(101,41,238,30,'Application',base.purple)+line('M220 71v9')+box(101,80,238,30,'Domain',base.teal)+line('M220 110v9')+box(101,119,238,29,'Infrastructure',base.green)),good:['CRUD-oriented business applications','Teams seeking familiar separation of concerns','Codebases where dependencies can stay intentional'],bad:['Anemic domain models and service bloat','Layers becoming generic pass-throughs','Unnecessary abstraction for simple features'],tradeoff:'Familiar structure and separation of concerns, but rigid layers can obscure business boundaries.'},
+  {id:'events',name:'Event-Driven Architecture',type:'distributed',summary:'Components communicate through events rather than direct calls.',subtitle:'Publish events and let independent consumers react asynchronously.',diagram:chart(box(6,51,121,43,'Publisher',base.blue)+line('M127 73h30')+box(157,51,126,43,'Event broker',base.purple)+line('M283 73h24M307 20v100M307 20h15M307 120h15')+box(322,0,114,36,'Consumer A',base.teal)+box(322,55,114,36,'Consumer B',base.teal)+box(322,110,114,36,'Consumer C',base.teal)),good:['Notifications, workflow orchestration, and integrations','Loose coupling between producers and consumers','Tasks that do not need synchronous completion'],bad:['Duplicate delivery and out-of-order events','Debugging cross-component processes','Event schema and compatibility management'],tradeoff:'Flexible asynchronous composition in exchange for harder ordering and consistency guarantees.'},
+  {id:'hex',name:'Hexagonal Architecture',type:'foundational',summary:'Protect business rules behind ports and replaceable adapters.',subtitle:'Keep domain logic independent of frameworks and providers.',diagram:chart(box(154,54,132,43,'Domain core',base.blue)+box(5,10,124,36,'Web adapter',base.purple)+box(5,104,124,36,'CLI adapter',base.purple)+box(311,10,124,36,'Database',base.teal)+box(311,104,124,36,'External API',base.teal)+line('M129 28h25v47M129 122h25V75M286 75h25V28M311 122V75') ),good:['Business logic requiring extensive automated tests','Products integrating with several external providers','Systems expected to change infrastructure over time'],bad:['Too many abstractions for a small codebase','Adapter interfaces that leak infrastructure concerns','Discipline needed to maintain dependency direction'],tradeoff:'Domain isolation and testability for additional interfaces and structure.'},
+  {id:'serverless',name:'Serverless Functions',type:'distributed',summary:'Run event-driven functions on managed execution platforms.',subtitle:'Scale individual workloads using managed cloud functions.',diagram:chart(box(5,53,118,40,'HTTP / Event',base.blue)+line('M123 73h39M162 18v110M162 18h17M162 73h17M162 128h17')+box(179,0,139,36,'Function A',base.purple)+box(179,55,139,36,'Function B',base.purple)+box(179,110,139,36,'Function C',base.purple)+line('M318 18h21v110M339 73h16')+box(355,53,81,40,'Services',base.teal)),good:['Bursty asynchronous processing','Teams minimizing server management','Small independently triggered integrations'],bad:['Provider coupling and local-debugging friction','Runtime limits, cold starts, and cost surprises','Distributed observability and state management'],tradeoff:'Managed execution and elastic scale for tighter platform constraints and distributed complexity.'}
+ ];
+ const grid=document.getElementById('pattern-grid'), search=document.getElementById('pattern-search'), filters=[...document.querySelectorAll('[data-filter]')], empty=document.getElementById('no-results');
+ let active='all';
+ function render(){const q=search.value.trim().toLowerCase();const matched=patterns.filter(p=>(active==='all'||p.type===active) && (p.name.toLowerCase().includes(q)||p.summary.toLowerCase().includes(q)));grid.replaceChildren();matched.forEach(p=>{const button=document.createElement('button');button.type='button';button.className='pattern';button.setAttribute('aria-label',`Explore ${p.name}`);button.innerHTML=`<span class="visual">${p.diagram}</span><span class="body"><span class="pattern-title">${p.name}</span><span class="pattern-desc">${p.summary}</span><span class="cardfoot"><span class="tag">${p.type==='foundational'?'Foundational':'Distributed'}</span><span class="explore">Explore ↗</span></span></span>`;button.addEventListener('click',()=>openPattern(p));grid.appendChild(button)});empty.style.display=matched.length?'none':'block';}
+ filters.forEach(button=>button.addEventListener('click',()=>{active=button.dataset.filter;filters.forEach(f=>f.setAttribute('aria-pressed',String(f===button)));render()}));search.addEventListener('input',render);
+ const dlg=document.getElementById('pattern-dialog');const list=(id,values)=>{const el=document.getElementById(id);el.replaceChildren();values.forEach(value=>{const li=document.createElement('li');li.textContent=value;el.appendChild(li)})};
+ function openPattern(p){document.getElementById('dialog-title').textContent=p.name;document.getElementById('dialog-sub').textContent=p.subtitle;document.getElementById('modal-chart').innerHTML=p.diagram;list('dialog-good',p.good);list('dialog-bad',p.bad);document.getElementById('dialog-tradeoff').textContent=p.tradeoff;dlg.showModal();}
+ document.getElementById('close-dialog').addEventListener('click',()=>dlg.close());dlg.addEventListener('click',e=>{if(e.target===dlg) dlg.close();});render();
+})();
+</script>
+</body>
+</html>
